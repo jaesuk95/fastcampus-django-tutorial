@@ -10,7 +10,7 @@ def shop(request):
         # snippets = Snippet.objects.all()    # Snippet 은 데이터 베이스 이름이다
         # serializer = SnippetSerializer(snippets, many=True)
         shop = Shop.objects.all()
-        serializer = ShopSerializer(shop,many=True)
+        serializer = ShopSerializer(shop, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     # elif request.method == 'POST':
