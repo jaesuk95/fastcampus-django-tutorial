@@ -14,6 +14,7 @@ def shop(request):
         # serializer = SnippetSerializer(snippets, many=True)
         shop = Shop.objects.all()
         serializer = ShopSerializer(shop, many=True)  # many=True 데이터가 여러개 있어도 상관 안한다
+        # return render(request, 'order/shop_list.html', {'shop_list': shop})   # 굳이 할 필요없음, 프론트 작업
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
@@ -31,6 +32,21 @@ def menu(request):
         # snippets = Snippet.objects.all()    # Snippet 은 데이터 베이스 이름이다
         # serializer = SnippetSerializer(snippets, many=True)
         menu = Menu.objects.all()
+        serializer = MenuSerializer(menu, many=True)  # many=True 데이터가 여러개 있어도 상관 안한다
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = MenuSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def menu_from_shop(request, shop):
+    if request.method == 'GET':
+        menu = Menu.objects.filter(shop=shop)   # filter 는 여러개 행들을 가져올 수 있다
         serializer = MenuSerializer(menu, many=True)  # many=True 데이터가 여러개 있어도 상관 안한다
         return JsonResponse(serializer.data, safe=False)
 
